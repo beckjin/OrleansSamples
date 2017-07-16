@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<OrleansConfiguration xmlns="urn:orleans">
+    <Globals>
+        <SeedNode Address="localhost" Port="11111" />
+        <StorageProviders>
+            <Provider Type="Orleans.Storage.AdoNetStorageProvider"
+                      Name="Default"
+                      AdoInvariant="MySql.Data.MySqlClient"
+                      DataConnectionString="Server=localhost;Database=orleansstorage;Uid=root;Pwd=123456"/>
+        </StorageProviders>
+    </Globals>
+    <Defaults>
+        <Networking Address="localhost" Port="11111" />
+        <ProxyingGateway Address="localhost" Port="30000" />
+    </Defaults>
+</OrleansConfiguration>
