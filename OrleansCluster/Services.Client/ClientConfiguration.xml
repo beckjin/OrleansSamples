@@ -1,4 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ClientConfiguration xmlns="urn:orleans">
-    <SystemStore SystemStoreType="Custom" CustomGatewayProviderAssemblyName="OrleansConsulUtils" DataConnectionString="http://127.0.0.1:8500" DeploymentId="MyOrleansDeployment" />
+    <!--<SystemStore SystemStoreType="Custom" CustomGatewayProviderAssemblyName="OrleansConsulUtils" DataConnectionString="http://127.0.0.1:8500" DeploymentId="MyOrleansDeployment" />-->
+    <SystemStore SystemStoreType ="SqlServer"
+                DeploymentId="OrleansTest"
+                DataConnectionString="Data Source=.;Database=OrleansStorage;User ID=sa;Password=123456;Integrated Security=True" AdoInvariant="System.Data.SqlClient" />
 </ClientConfiguration>

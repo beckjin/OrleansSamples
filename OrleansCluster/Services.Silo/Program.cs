@@ -29,9 +29,9 @@ namespace Services.Silo
                     siloHost.ConfigFileName = configFileName;
                     siloHost.LoadOrleansConfig();
 
-                    siloHost.Config.Globals.LivenessType = GlobalConfiguration.LivenessProviderType.Custom;
-                    siloHost.Config.Globals.MembershipTableAssembly = "OrleansConsulUtils";
-                    siloHost.Config.Globals.ReminderServiceType = GlobalConfiguration.ReminderServiceProviderType.Disabled;
+                    //siloHost.Config.Globals.LivenessType = GlobalConfiguration.LivenessProviderType.Custom;
+                    //siloHost.Config.Globals.MembershipTableAssembly = "OrleansConsulUtils";
+                    //siloHost.Config.Globals.ReminderServiceType = GlobalConfiguration.ReminderServiceProviderType.Disabled;
 
                     siloHost.InitializeOrleansSilo();
                     var startedOk = siloHost.StartOrleansSilo();

@@ -1,18 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <OrleansConfiguration xmlns="urn:orleans">
     <Globals>
-        <SystemStore SystemStoreType="None" DataConnectionString="http://localhost:8500" DeploymentId="MyOrleansDeployment" />
+        <SystemStore SystemStoreType="SqlServer" DeploymentId="OrleansTest" DataConnectionString="Server=.;Database=OrleansStorage;User ID=sa;Password=123456;"/>
         <!--
+        <SystemStore SystemStoreType="None" DataConnectionString="http://localhost:8500" DeploymentId="MyOrleansDeployment" />
         <BootstrapProviders>
             <Provider Type="OrleansDashboard.Dashboard" Name="Dashboard" Port="8081" />
         </BootstrapProviders>
+        -->
         <StorageProviders>
             <Provider Type="Orleans.Storage.AdoNetStorageProvider"
-                      Name="Default"
-                      AdoInvariant="MySql.Data.MySqlClient"
-                      DataConnectionString="Server=localhost;Database=orleansstoragecluster;Uid=root;Pwd=123456"/>
+                      Name="OrleansStorage"
+                      AdoInvariant="System.Data.SqlClient"
+                      DataConnectionString="Server=.;Database=OrleansStorage;User ID=sa;Password=123456;Integrated Security=True"/>
         </StorageProviders>
-        -->
     </Globals>
     <Defaults>
         <Networking Address="localhost" Port="11113" />

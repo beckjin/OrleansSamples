@@ -39,16 +39,11 @@ namespace Services.Client
                 var str = Console.ReadLine();
                 if (str == "exit")
                     break;
-                DoClientWork();
+                var joe = GrainClient.GrainFactory.GetGrain<IPersonGrain>("Joe");
+                joe.SayHelloAsync();
             }
 
             Console.ReadLine();
-        }
-
-        private static async Task DoClientWork()
-        {
-            var grain = GrainClient.GrainFactory.GetGrain<IStockGrain>("MSFT");
-            await grain.GetPrice();
         }
     }
 }

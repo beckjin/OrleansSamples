@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Services.Interfaces
 {
-    public interface IStockGrain : IGrainWithStringKey
+    public interface IPersonGrain : IGrainWithStringKey
     {
-        Task<string> GetPrice();
+        Task SayHelloAsync();
     }
 }
