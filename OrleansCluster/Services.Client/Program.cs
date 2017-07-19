@@ -39,11 +39,17 @@ namespace Services.Client
                 var str = Console.ReadLine();
                 if (str == "exit")
                     break;
-                var joe = GrainClient.GrainFactory.GetGrain<IPersonGrain>("Joe");
-                joe.SayHelloAsync();
+
+                DoWork();
             }
 
             Console.ReadLine();
+        }
+
+        static async void DoWork()
+        {
+            var joe = GrainClient.GrainFactory.GetGrain<IPersonGrain>("Joe");
+            await joe.SayHelloAsync();
         }
     }
 }

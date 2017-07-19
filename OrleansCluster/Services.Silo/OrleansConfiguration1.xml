@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <OrleansConfiguration xmlns="urn:orleans">
     <Globals>
-        <SystemStore SystemStoreType="SqlServer" DeploymentId="OrleansTest" DataConnectionString="Server=.;Database=OrleansStorage;User ID=sa;Password=123456;"/>
+        <SystemStore SystemStoreType="SqlServer" DeploymentId="OrleansTest" DataConnectionString="Server=172.17.30.108;Database=OrleansStorage;User ID=sa;Password=mingdao!@#123;Pooling=true;Max Pool Size=32767;Min Pool Size=0;"/>
         <!--
         <SystemStore SystemStoreType="None" DataConnectionString="http://localhost:8500" DeploymentId="MyOrleansDeployment" />
         <BootstrapProviders>
@@ -12,7 +12,7 @@
             <Provider Type="Orleans.Storage.AdoNetStorageProvider"
                       Name="OrleansStorage"
                       AdoInvariant="System.Data.SqlClient"
-                      DataConnectionString="Server=.;Database=OrleansStorage;User ID=sa;Password=123456;Integrated Security=True"/>
+                      DataConnectionString="Server=172.17.30.108;Database=OrleansStorage;User ID=sa;Password=mingdao!@#123;Pooling=true;Max Pool Size=32767;Min Pool Size=0;"/>
         </StorageProviders>
     </Globals>
     <Defaults>
