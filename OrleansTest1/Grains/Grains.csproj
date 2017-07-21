@@ -7,8 +7,8 @@
     <ProjectGuid>{79544D2C-B61D-4469-8193-576CBD32765A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HelloWorld.Grains</RootNamespace>
-    <AssemblyName>HelloWorld.Grains</AssemblyName>
+    <RootNamespace>Grains</RootNamespace>
+    <AssemblyName>Grains</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -59,9 +59,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HelloWorld.Interfaces\HelloWorld.Interfaces.csproj">
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{945294d7-d7a7-4561-ad18-95eb29bacbd8}</Project>
-      <Name>HelloWorld.Interfaces</Name>
+      <Name>Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -7,8 +7,8 @@
     <ProjectGuid>{945294D7-D7A7-4561-AD18-95EB29BACBD8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HelloWorld.Interfaces</RootNamespace>
-    <AssemblyName>HelloWorld.Interfaces</AssemblyName>
+    <RootNamespace>Interfaces</RootNamespace>
+    <AssemblyName>Interfaces</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

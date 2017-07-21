@@ -1,11 +1,8 @@
-﻿using HelloWorld.Interfaces;
+﻿using Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace HelloWorld.Grains
+namespace Grains
 {
     public class HelloGrain : Orleans.Grain, IHello
     {
@@ -13,8 +10,10 @@ namespace HelloWorld.Grains
 
         public Task<string> SayHello(string greeting)
         {
+            System.Threading.Thread.Sleep(3000);
             var oldText = text;
             text = greeting;
+            Console.WriteLine(oldText + DateTime.Now);
             return Task.FromResult(oldText);
         }
     }

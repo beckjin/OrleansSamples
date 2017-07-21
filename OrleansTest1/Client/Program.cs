@@ -1,12 +1,7 @@
-﻿using HelloWorld.Interfaces;
+﻿using Interfaces;
 using Orleans;
 using Orleans.Runtime;
-using Orleans.Runtime.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OrleansClient
@@ -15,7 +10,11 @@ namespace OrleansClient
     {
         static void Main(string[] args)
         {
-            InitializeWithRetries();
+
+            Console.WriteLine("Please input ConfigFileName number:");
+            var number = Console.ReadLine();
+
+            InitializeWithRetries("ClientConfiguration" + number + ".xml");
 
             DoClientWork().Wait();
 
@@ -23,11 +22,11 @@ namespace OrleansClient
             Console.ReadLine();
         }
 
-        private static void InitializeWithRetries()
+        private static void InitializeWithRetries(string configFileName)
         {
             try
             {
-                GrainClient.Initialize("ClientConfiguration.xml");
+                GrainClient.Initialize(configFileName);
                 Console.WriteLine("Client successfully connect to silo host.");
             }
             catch (SiloUnavailableException ex)
