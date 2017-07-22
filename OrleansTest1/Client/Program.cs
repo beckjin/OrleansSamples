@@ -14,7 +14,8 @@ namespace OrleansClient
             Console.WriteLine("Please input ConfigFileName number:");
             var number = Console.ReadLine();
 
-            InitializeWithRetries("ClientConfiguration" + number + ".xml");
+            Console.Title = "Client" + number;
+            InitializeWithRetries(number);
 
             DoClientWork().Wait();
 
@@ -22,11 +23,11 @@ namespace OrleansClient
             Console.ReadLine();
         }
 
-        private static void InitializeWithRetries(string configFileName)
+        private static void InitializeWithRetries(string number)
         {
             try
             {
-                GrainClient.Initialize(configFileName);
+                GrainClient.Initialize("ClientConfiguration" + number + ".xml");
                 Console.WriteLine("Client successfully connect to silo host.");
             }
             catch (SiloUnavailableException ex)
@@ -40,10 +41,10 @@ namespace OrleansClient
         {
             var friend = GrainClient.GrainFactory.GetGrain<IHello>(0);
 
-            Console.WriteLine("{0}\n", await friend.SayHello("First"));
-            Console.WriteLine("{0}\n", await friend.SayHello("Second"));
-            Console.WriteLine("{0}\n", await friend.SayHello("Third"));
-            Console.WriteLine("{0}\n", await friend.SayHello("Fourth"));
+            Console.WriteLine("{0}", await friend.SayHello("Hi,a"));
+            Console.WriteLine("{0}", await friend.SayHello("Hi,b"));
+            Console.WriteLine("{0}", await friend.SayHello("Hi,c"));
+            Console.WriteLine("{0}", await friend.SayHello("Hi,d"));
         }
     }
 }
