@@ -28,23 +28,14 @@ namespace Client
                 }
             }
 
+            var random = new Random();
             while (true)
             {
-                Console.WriteLine("Press 'exit' to exit...");
-                var str = Console.ReadLine();
-                if (str == "exit")
-                    break;
-
-                DoWork();
+                Thread.Sleep(1000);
+                var grainId = random.Next().ToString();
+                var grain = GrainClient.GrainFactory.GetGrain<IPersonGrain>("Test-" + grainId);
+                grain.SayHelloAsync();
             }
-
-            Console.ReadLine();
-        }
-
-        static async void DoWork()
-        {
-            var joe = GrainClient.GrainFactory.GetGrain<IPersonGrain>("Joe");
-            await joe.SayHelloAsync();
         }
     }
 }
