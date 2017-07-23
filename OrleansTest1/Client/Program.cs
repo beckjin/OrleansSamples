@@ -4,7 +4,7 @@ using Orleans.Runtime;
 using System;
 using System.Threading.Tasks;
 
-namespace OrleansClient
+namespace Client
 {
     class Program
     {

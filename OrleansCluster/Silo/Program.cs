@@ -15,8 +15,12 @@ namespace Silo
             {
                 using (var siloHost = new SiloHost(Console.Title))
                 {
-                    siloHost.ConfigFileName = "OrleansConfiguration" + number + ".xml";
+                    siloHost.ConfigFileName = "OrleansConfiguration" + number + ".xml"; ;
                     siloHost.LoadOrleansConfig();
+
+                    //siloHost.Config.Globals.LivenessType = GlobalConfiguration.LivenessProviderType.Custom;
+                    //siloHost.Config.Globals.MembershipTableAssembly = "OrleansConsulUtils";
+                    //siloHost.Config.Globals.ReminderServiceType = GlobalConfiguration.ReminderServiceProviderType.Disabled;
 
                     siloHost.InitializeOrleansSilo();
                     var startedOk = siloHost.StartOrleansSilo();

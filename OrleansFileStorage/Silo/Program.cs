@@ -1,5 +1,9 @@
 ﻿using Orleans.Runtime.Host;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Silo
 {
@@ -7,15 +11,12 @@ namespace Silo
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Please input number:");
-            var number = Console.ReadLine();
-
-            Console.Title = "Silo" + number;
+            Console.Title = "Silo";
             try
             {
                 using (var siloHost = new SiloHost(Console.Title))
                 {
-                    siloHost.ConfigFileName = "OrleansConfiguration" + number + ".xml";
+                    siloHost.ConfigFileName = "OrleansConfiguration.xml";
                     siloHost.LoadOrleansConfig();
 
                     siloHost.InitializeOrleansSilo();
