@@ -1,7 +1,7 @@
 ﻿using Orleans;
 using Orleans.Runtime;
 using Orleans.Runtime.Configuration;
-using State.Interfaces;
+using Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +35,11 @@ namespace State.Client
 
             var joe = GrainClient.GrainFactory.GetGrain<IPersonGrain>("Joe");
             joe.SayHelloAsync();
+            joe.SayHelloAsync();
+
+            var sam = GrainClient.GrainFactory.GetGrain<IPersonGrain>("Sam");
+            sam.SayHelloAsync();
+            sam.SayHelloAsync();
 
             Console.ReadLine();
         }

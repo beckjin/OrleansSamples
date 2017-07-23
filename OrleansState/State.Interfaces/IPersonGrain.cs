@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace State.Interfaces
+namespace Interfaces
 {
     public interface IPersonGrain : IGrainWithStringKey
     {

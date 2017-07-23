@@ -1,13 +1,15 @@
 ﻿using Orleans;
-using State.Interfaces;
+using Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Orleans.Providers;
 
-namespace State.Grains
+namespace Grains
 {
+    [StorageProvider(ProviderName = "OrleansStorage")]
     public class PersonGrain : Grain<PersonGrainState>, IPersonGrain
     {
         public async Task SayHelloAsync()

@@ -2,11 +2,15 @@
 <OrleansConfiguration xmlns="urn:orleans">
     <Globals>
         <SeedNode Address="localhost" Port="11111" />
+        <!--<StorageProviders>
+            <Provider Type="Orleans.Storage.MemoryStorage"
+                      Name="OrleansStorage" />
+        </StorageProviders>-->
         <StorageProviders>
             <Provider Type="Orleans.Storage.AdoNetStorageProvider"
-                      Name="Default"
-                      AdoInvariant="MySql.Data.MySqlClient"
-                      DataConnectionString="Server=localhost;Database=orleansstorage;Uid=root;Pwd=123456"/>
+                      Name="OrleansStorage"
+                      AdoInvariant="System.Data.SqlClient"
+                      DataConnectionString="Server=172.17.30.108;Database=OrleansStorage;User ID=sa;Password=mingdao!@#123;Pooling=true;Max Pool Size=32767;Min Pool Size=0;"/>
         </StorageProviders>
     </Globals>
     <Defaults>
