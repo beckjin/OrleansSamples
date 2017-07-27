@@ -34,12 +34,12 @@ namespace Client
                 }
             }
 
-            DoWork();
+            Subscribe();
 
             Console.ReadLine();
         }
 
-        static async void DoWork()
+        static async void Subscribe()
         {
             var streamProvider = GrainClient.GetStreamProvider("SMSProvider");
             var stream = streamProvider.GetStream<int>(Guid.Empty, "RANDOMDATA");
@@ -48,9 +48,6 @@ namespace Client
                 Console.WriteLine($"Received data: {data}");
                 return Task.CompletedTask;
             });
-
-            var subscriberGrain = GrainClient.GrainFactory.GetGrain<IRandomReceiver>(new Guid());
-            await subscriberGrain.Start();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Interfaces;
 using Orleans;
+using Orleans.Streams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,26 +9,28 @@ using System.Threading.Tasks;
 
 namespace Grains
 {
-    //[ImplicitStreamSubscription("RANDOMDATA")]
     public class ReceiverGrain : Grain, IRandomReceiver
     {
+        IAsyncStream<string> stream;
+
         public override Task OnActivateAsync()
         {
             var guid = this.GetPrimaryKey();
 
             var streamProvider = GetStreamProvider("SMSProvider");
-            var stream = streamProvider.GetStream<int>(guid, "RANDOMDATA");
+            stream = streamProvider.GetStream<string>(guid, "RANDOMDATA");
 
-            RegisterTimer(s => {
-                return stream.OnNextAsync(new Random().Next());
-            }, null, TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(1000));
+            //RegisterTimer(s =>
+            //{
+            //    return stream.OnNextAsync(new Random().Next().ToString());
+            //}, null, TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(1000));
 
             return base.OnActivateAsync();
         }
 
-        public Task Start()
+        public Task SendRandomMessage(string message)
         {
-            return Task.CompletedTask;
+            return stream.OnNextAsync(message);
         }
     }
 }
