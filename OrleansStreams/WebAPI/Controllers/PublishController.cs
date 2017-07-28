@@ -12,11 +12,16 @@ namespace WebAPI.Controllers
 {
     public class PublishController : ApiController
     {
+        /// <summary>
+        /// /api/publish/sendMessage?message=hi
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         [HttpGet]
-        public Task ProcessMessage(string message)
+        public Task SendMessage(string message)
         {
-            var subscriberGrain = GrainClient.GrainFactory.GetGrain<IRandomReceiver>(new Guid());
-            subscriberGrain.SendRandomMessage(message);
+            var subscriberGrain = GrainClient.GrainFactory.GetGrain<IRandomReceiver>(Guid.Empty);
+            subscriberGrain.SendMessage(message);
             return Task.CompletedTask;
         }
     }

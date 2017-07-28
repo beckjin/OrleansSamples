@@ -9,6 +9,6 @@ namespace Interfaces
 {
     public interface  IRandomReceiver: IGrainWithGuidKey
     {
-        Task SendRandomMessage(string message);
+        Task SendMessage(string message);
     }
 }

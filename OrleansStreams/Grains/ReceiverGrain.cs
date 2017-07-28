@@ -28,7 +28,7 @@ namespace Grains
             return base.OnActivateAsync();
         }
 
-        public Task SendRandomMessage(string message)
+        public Task SendMessage(string message)
         {
             return stream.OnNextAsync(message);
         }

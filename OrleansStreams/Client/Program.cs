@@ -42,12 +42,15 @@ namespace Client
         static async void Subscribe()
         {
             var streamProvider = GrainClient.GetStreamProvider("SMSProvider");
-            var stream = streamProvider.GetStream<int>(Guid.Empty, "RANDOMDATA");
+            var stream = streamProvider.GetStream<string>(Guid.Empty, "RANDOMDATA");
             await stream.SubscribeAsync((data, token) =>
             {
                 Console.WriteLine($"Received data: {data}");
                 return Task.CompletedTask;
             });
+
+            //var subscriberGrain = GrainClient.GrainFactory.GetGrain<IRandomReceiver>(Guid.Empty);
+            //await subscriberGrain.SendMessage("HI");
         }
     }
 }
