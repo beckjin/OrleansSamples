@@ -112,7 +112,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IRandomReceiver.cs" />
+    <Compile Include="IPublisherGrain.cs" />
+    <Compile Include="ISubscriberGrain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

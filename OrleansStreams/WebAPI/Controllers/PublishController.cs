@@ -13,15 +13,16 @@ namespace WebAPI.Controllers
     public class PublishController : ApiController
     {
         /// <summary>
-        /// /api/publish/sendMessage?message=hi
+        /// /api/publish/sendMessage?message=hi&guid=
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
         [HttpGet]
-        public Task SendMessage(string message)
+        public Task SendMessage(string message, string guid)
         {
-            var subscriberGrain = GrainClient.GrainFactory.GetGrain<IRandomReceiver>(Guid.Empty);
-            subscriberGrain.SendMessage(message);
+            var primaryKey = Guid.Parse(guid);
+            var publisherGrain = GrainClient.GrainFactory.GetGrain<IPublisherGrain>(primaryKey);
+            publisherGrain.PublishMessageAsync(message);
             return Task.CompletedTask;
         }
     }

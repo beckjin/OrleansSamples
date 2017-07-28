@@ -2,13 +2,8 @@
 using Orleans;
 using Orleans.Runtime;
 using Orleans.Runtime.Configuration;
-using Orleans.Streams;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Client
 {
@@ -41,16 +36,10 @@ namespace Client
 
         static async void Subscribe()
         {
-            var streamProvider = GrainClient.GetStreamProvider("SMSProvider");
-            var stream = streamProvider.GetStream<string>(Guid.Empty, "RANDOMDATA");
-            await stream.SubscribeAsync((data, token) =>
-            {
-                Console.WriteLine($"Received data: {data}");
-                return Task.CompletedTask;
-            });
-
-            //var subscriberGrain = GrainClient.GrainFactory.GetGrain<IRandomReceiver>(Guid.Empty);
-            //await subscriberGrain.SendMessage("HI");
+            var guid = Guid.NewGuid();
+            Console.Write(guid);
+            var subscriberGrain = GrainClient.GrainFactory.GetGrain<ISubscriberGrain>(guid);
+            await subscriberGrain.SubscribeAsync();
         }
     }
 }
