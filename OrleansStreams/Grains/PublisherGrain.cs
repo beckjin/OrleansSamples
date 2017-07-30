@@ -8,20 +8,20 @@ namespace Grains
 {
     public class PublisherGrain : Grain, IPublisherGrain
     {
-        private IAsyncStream<string> grainStream;
+        private IAsyncStream<string> stream;
 
         public override Task OnActivateAsync()
         {
-            var guid = this.GetPrimaryKey();
+            var streamId = this.GetPrimaryKey();
             var streamProvider = this.GetStreamProvider("SMSProvider");
-            this.grainStream = streamProvider.GetStream<string>(guid, "GrainStream");
+            this.stream = streamProvider.GetStream<string>(streamId, "GrainExplicitStream"); //隐式：GrainImplicitStream
             return base.OnActivateAsync();
         }
 
         public async Task PublishMessageAsync(string data)
         {
             Console.WriteLine($"Sending data: {data}");
-            await this.grainStream.OnNextAsync(data);
+            await this.stream.OnNextAsync(data);
         }
     }
 }

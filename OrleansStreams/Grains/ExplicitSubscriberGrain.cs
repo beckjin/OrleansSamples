@@ -16,7 +16,7 @@ namespace Grains
         public async override Task OnActivateAsync()
         {
             var streamProvider = this.GetStreamProvider("SMSProvider");
-            stream = streamProvider.GetStream<string>(this.GetPrimaryKey(), "GrainStream");
+            stream = streamProvider.GetStream<string>(this.GetPrimaryKey(), "GrainExplicitStream");
             var subscriptionHandles = await stream.GetAllSubscriptionHandles();
             if (subscriptionHandles.Count > 0)
             {
@@ -32,9 +32,9 @@ namespace Grains
             return await stream.SubscribeAsync((payload, token) => this.ReceivedMessageAsync(payload));
         }
 
-        public Task ReceivedMessageAsync(string payload)
+        public Task ReceivedMessageAsync(string data)
         {
-            Console.WriteLine($"Received message:{payload}");
+            Console.WriteLine($"Received message:{data}");
             return Task.CompletedTask;
         }
     }

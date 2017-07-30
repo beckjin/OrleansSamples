@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 
 namespace Interfaces
 {
-    public interface ISubscriberGrain : IGrainWithGuidKey
+    public interface IImplicitSubscriberGrain : IGrainWithGuidKey
     {
-
     }
 }

@@ -114,7 +114,7 @@
   <ItemGroup>
     <Compile Include="IExplicitSubscriberGrain.cs" />
     <Compile Include="IPublisherGrain.cs" />
-    <Compile Include="ISubscriberGrain.cs" />
+    <Compile Include="IImplicitSubscriberGrain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

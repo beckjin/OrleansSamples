@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Grains
 {
-    [ImplicitStreamSubscription("GrainStream1")]
-    public class ImplicitSubscriberGrain : Grain, ISubscriberGrain, IAsyncObserver<string>
+    [ImplicitStreamSubscription("GrainImplicitStream")]
+    public class ImplicitSubscriberGrain : Grain, IImplicitSubscriberGrain, IAsyncObserver<string>
     {
         protected StreamSubscriptionHandle<string> streamHandle;
 
         public override async Task OnActivateAsync()
         {
-            var guid = this.GetPrimaryKey();
+            var streamId = this.GetPrimaryKey();
             var streamProvider = this.GetStreamProvider("SMSProvider");
-            var stream = streamProvider.GetStream<string>(guid, "GrainStream1");
+            var stream = streamProvider.GetStream<string>(streamId, "GrainImplicitStream");
             streamHandle = await stream.SubscribeAsync(OnNextAsync);
         }
 

@@ -3,15 +3,19 @@ using Orleans;
 using Orleans.Runtime;
 using Orleans.Runtime.Configuration;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
-namespace Client
+namespace ClientB
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.Title = "Client";
+            Console.Title = "ClientB";
             var config = ClientConfiguration.LoadFromFile("ClientConfiguration.xml");
 
             while (true)
@@ -29,21 +33,18 @@ namespace Client
                 }
             }
 
-            Publisher();
+            ExplicitSubscriber();
 
             Console.ReadLine();
         }
 
-        static void Publisher()
+        static void ExplicitSubscriber()
         {
-            while (true)
-            {
-                Console.WriteLine("Press 'exit' to exit...");
-                var input = Console.ReadLine();
-                if (input == "exit") break;
-                var publisherGrain = GrainClient.GrainFactory.GetGrain<IPublisherGrain>(Guid.Empty);
-                publisherGrain.PublishMessageAsync(input);
-            }
+            var subscriberGrain = GrainClient.GrainFactory.GetGrain<IExplicitSubscriberGrain>(Guid.Empty);
+            var streamHandle = subscriberGrain.SubscribeAsync().Result;
+            Console.WriteLine("Press enter to exit...");
+            Console.ReadLine();
+            streamHandle.UnsubscribeAsync();
         }
     }
 }
