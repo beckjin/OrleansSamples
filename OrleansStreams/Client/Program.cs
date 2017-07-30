@@ -29,17 +29,34 @@ namespace Client
                 }
             }
 
-            Subscribe();
+            //ImplicitPublisher();
+
+            ExplicitSubscriber();
 
             Console.ReadLine();
         }
 
-        static async void Subscribe()
+
+        static void ImplicitPublisher()
+        {
+            while (true)
+            {
+                Console.WriteLine("Press 'exit' to exit...");
+                var input = Console.ReadLine();
+                if (input == "exit") break;
+                var publisherGrain = GrainClient.GrainFactory.GetGrain<IPublisherGrain>(Guid.NewGuid());
+                publisherGrain.PublishMessageAsync(input);
+            }
+        }
+
+        static void ExplicitSubscriber()
         {
             var guid = Guid.NewGuid();
-            Console.Write(guid);
-            var subscriberGrain = GrainClient.GrainFactory.GetGrain<ISubscriberGrain>(guid);
-            await subscriberGrain.SubscribeAsync();
+            var subscriberGrain = GrainClient.GrainFactory.GetGrain<IExplicitSubscriberGrain>(Guid.Empty);
+            var streamHandle = subscriberGrain.SubscribeAsync().Result;
+            Console.WriteLine("Press enter to exit...");
+            Console.ReadLine();
+            streamHandle.UnsubscribeAsync();
         }
     }
 }

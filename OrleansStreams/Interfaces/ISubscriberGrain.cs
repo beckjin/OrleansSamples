@@ -5,8 +5,6 @@ namespace Interfaces
 {
     public interface ISubscriberGrain : IGrainWithGuidKey
     {
-        Task ReceiveMessageAsync(string data);
 
-        Task SubscribeAsync();
     }
 }
