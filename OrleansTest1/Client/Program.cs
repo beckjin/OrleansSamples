@@ -10,24 +10,19 @@ namespace Client
     {
         static void Main(string[] args)
         {
+            Console.Title = "Client" ;
+            InitializeWithRetries();
 
-            Console.WriteLine("Please input ConfigFileName number:");
-            var number = Console.ReadLine();
-
-            Console.Title = "Client" + number;
-            InitializeWithRetries(number);
-
-            DoClientWork().Wait();
-
+            DoClientWork();
             Console.WriteLine("Press any key to stop.");
             Console.ReadLine();
         }
 
-        private static void InitializeWithRetries(string number)
+        private static void InitializeWithRetries()
         {
             try
             {
-                GrainClient.Initialize("ClientConfiguration" + number + ".xml");
+                GrainClient.Initialize("ClientConfiguration.xml");
                 Console.WriteLine("Client successfully connect to silo host.");
             }
             catch (SiloUnavailableException ex)
@@ -37,14 +32,31 @@ namespace Client
             }
         }
 
-        private static async Task DoClientWork()
+        private static void DoClientWork()
         {
-            var friend = GrainClient.GrainFactory.GetGrain<IHello>(0);
+            var t1 = Task.Factory.StartNew(() =>
+            {
+                AddCount();
+            });
+            var t2 = Task.Factory.StartNew(() =>
+            {
+                AddCount();
+            });
+            var t3 = Task.Factory.StartNew(() =>
+            {
+                AddCount();
+            });
+            Task.WaitAll(t1, t2, t3);
+        }
 
-            Console.WriteLine("{0}", await friend.SayHello("Hi,a"));
-            Console.WriteLine("{0}", await friend.SayHello("Hi,b"));
-            Console.WriteLine("{0}", await friend.SayHello("Hi,c"));
-            Console.WriteLine("{0}", await friend.SayHello("Hi,d"));
+        static void AddCount()
+        {
+            var test = GrainClient.GrainFactory.GetGrain<ITest>(0);
+
+            Parallel.For(0, 200, (i) =>
+            {
+                test.AddCount();
+            });
         }
     }
 }
