@@ -58,5 +58,13 @@ namespace Client
                 test.AddCount();
             });
         }
+
+        //private static int num = 0;
+        //static void NotGrainAddCount()
+        //{
+        //    System.Threading.Thread.Sleep(100);
+        //    num++;
+        //    Console.WriteLine(num);
+        //}
     }
 }
