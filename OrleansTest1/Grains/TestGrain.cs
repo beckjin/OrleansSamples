@@ -6,12 +6,12 @@ namespace Grains
 {
     public class TestGrain : Orleans.Grain, ITest
     {
-        private int num = 0;
+        private int num = 1;
 
-        public Task AddCount()
+        public Task AddCount(string taskName)
         {
+            Console.WriteLine(taskName + "----" + num);
             num++;
-            Console.WriteLine(num);
             return Task.CompletedTask;
         }
     }

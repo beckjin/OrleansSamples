@@ -4,6 +4,6 @@ namespace Interfaces
 {
     public interface ITest : Orleans.IGrainWithIntegerKey
     {
-        Task AddCount();
+        Task AddCount(string taskName);
     }
 }

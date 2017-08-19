@@ -10,7 +10,7 @@ namespace Client
     {
         static void Main(string[] args)
         {
-            Console.Title = "Client" ;
+            Console.Title = "Client";
             InitializeWithRetries();
 
             DoClientWork();
@@ -36,34 +36,35 @@ namespace Client
         {
             var t1 = Task.Factory.StartNew(() =>
             {
-                AddCount();
+                AddCount("T1");
             });
             var t2 = Task.Factory.StartNew(() =>
             {
-                AddCount();
+                AddCount("T2");
             });
             var t3 = Task.Factory.StartNew(() =>
             {
-                AddCount();
+                AddCount("T3");
             });
             Task.WaitAll(t1, t2, t3);
         }
 
-        static void AddCount()
+        static void AddCount(string taskName)
         {
             var test = GrainClient.GrainFactory.GetGrain<ITest>(0);
 
             Parallel.For(0, 200, (i) =>
             {
-                test.AddCount();
+                test.AddCount(taskName);
+                //NotGrainAddCount(taskName);
             });
         }
 
-        //private static int num = 0;
-        //static void NotGrainAddCount()
-        //{
-        //    num++;
-        //    Console.WriteLine(num);
-        //}
+        private static int num = 1;
+        static void NotGrainAddCount(string taskName)
+        {
+            Console.WriteLine(taskName + "----" + num);
+            num++;
+        }
     }
 }
