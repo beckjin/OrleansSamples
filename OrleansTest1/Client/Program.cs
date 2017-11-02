@@ -53,11 +53,16 @@ namespace Client
         {
             var test = GrainClient.GrainFactory.GetGrain<ITest>(0);
 
-            Parallel.For(0, 200, (i) =>
+            for (int i = 0; i < 200; i++)
             {
                 test.AddCount(taskName);
                 //NotGrainAddCount(taskName);
-            });
+            }
+            //Parallel.For(0, 200, (i) =>
+            //{
+            //    test.AddCount(taskName);
+
+            //});
         }
 
         private static int num = 1;

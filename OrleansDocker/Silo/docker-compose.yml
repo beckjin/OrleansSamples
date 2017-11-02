@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  app:
+    image: hub.mingdao.com/beck/orleansservice:0.0.5
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 5s
+    volumes:
+      - /usr/local/beck/docker/beck-orleansservice/config:/app/Config
+    ports:
+      - "40000:40000"
