@@ -8,6 +8,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Orleans.OrleansRuntime" Version="$(OrleansPackageVersion)" />
     <PackageReference Include="Microsoft.Orleans.OrleansProviders" Version="$(OrleansPackageVersion)" />
+	<PackageReference Include="Microsoft.Orleans.OrleansSqlUtils" Version="$(OrleansPackageVersion)" />
+	<PackageReference Include="System.Data.SqlClient" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup>

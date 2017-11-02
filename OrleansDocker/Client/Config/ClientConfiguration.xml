@@ -1,4 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ClientConfiguration xmlns="urn:orleans">
-    <Gateway Address="127.0.0.1" Port="40000"/>
+    <SystemStore SystemStoreType ="SqlServer"
+                DeploymentId="OrleansTest"
+                DataConnectionString="Data Source=.;Database=OrleansStorage;User ID=sa;Password=123456;Pooling=true;Max Pool Size=32767;Min Pool Size=0;" 
+                AdoInvariant="System.Data.SqlClient" />
 </ClientConfiguration>
