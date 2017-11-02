@@ -11,26 +11,18 @@ namespace Client
     {
         static void Main(string[] args)
         {
-            var result = RunMainAsync().Result;
-        }
-
-        private static async Task<int> RunMainAsync()
-        {
             try
             {
-                using (var client = await StartClientWithRetries())
-                {
-                    await DoClientWork(client);
-                    Console.ReadKey();
-                }
+                var client = StartClientWithRetries().Result;
 
-                return 0;
+                DoClientWork(client).Wait();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return 1;
             }
+
+            Console.ReadLine();
         }
 
         private static async Task<IClusterClient> StartClientWithRetries(int initializeAttemptsBeforeFailing = 5)

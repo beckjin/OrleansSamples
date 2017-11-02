@@ -20,12 +20,13 @@ namespace Silo
             var config = new ClusterConfiguration();
             config.LoadFromFile("Config/OrleansConfiguration.xml");
 
-            var builder = new SiloHostBuilder()
+            var host = new SiloHostBuilder()
                 .UseConfiguration(config)
-                .AddApplicationPartsFromReferences(typeof(HelloGrain).Assembly);
+                .AddApplicationPartsFromReferences(typeof(HelloGrain).Assembly)
+                .Build();
 
-            var host = builder.Build();
             await host.StartAsync();
+
             Console.WriteLine("Application started. Listening on " + config.Defaults.ProxyGatewayEndpoint);
 
             return host;
