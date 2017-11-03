@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<OrleansConfiguration xmlns="urn:orleans">
+    <Globals>
+        <Application>
+            <Defaults>
+                <Deactivation AgeLimit="1m"/>
+            </Defaults>
+        </Application>
+        <SeedNode Address="localhost" Port="11111" />
+        <BootstrapProviders>
+            <Provider Type="OrleansDashboard.Dashboard" Name="Dashboard" />
+        </BootstrapProviders>
+    </Globals>
+    <Defaults>
+        <Networking Address="localhost" Port="11111" />
+        <ProxyingGateway Address="localhost" Port="30000" />
+    </Defaults>
+</OrleansConfiguration>
