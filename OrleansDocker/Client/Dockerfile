@@ -4,4 +4,4 @@ COPY bin/Release/PublishOutput  /app/
 
 WORKDIR /app
 
-ENTRYPOINT ["dotnet", "/app/Silo.dll"]
+ENTRYPOINT ["dotnet", "/app/Client.dll"]

@@ -1,8 +1,11 @@
-﻿using Grains;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Orleans.Hosting;
 using Orleans.Runtime.Configuration;
 using System;
-using System.Threading.Tasks;
+using System.IO;
+using System.Linq;
+using System.Net;
 
 namespace Silo
 {
@@ -10,26 +13,35 @@ namespace Silo
     {
         static void Main(string[] args)
         {
-            var host = StartSilo().Result;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("Config/appsettings.json", false, true);
+            var configuration = builder.Build();
 
-            host.Stopped.Wait();
-        }
-
-        private static async Task<ISiloHost> StartSilo()
-        {
             var config = new ClusterConfiguration();
-            config.LoadFromFile("Config/OrleansConfiguration.xml");
+            config.Globals.DataConnectionString = configuration.GetSection("DataConnectionString").Value;
+            config.Globals.DeploymentId = configuration.GetSection("DeploymentId").Value;
+            config.Globals.LivenessType = GlobalConfiguration.LivenessProviderType.SqlServer;
+            config.Globals.ReminderServiceType = GlobalConfiguration.ReminderServiceProviderType.SqlServer;
 
-            var host = new SiloHostBuilder()
-                .UseConfiguration(config)
-                .AddApplicationPartsFromReferences(typeof(HelloGrain).Assembly)
-                .Build();
+            config.Defaults.PropagateActivityId = true;
+            config.Defaults.ProxyGatewayEndpoint = new IPEndPoint(IPAddress.Any, Convert.ToInt32(configuration.GetSection("ProxyGatewayPort").Value));
+            config.Defaults.Port = Convert.ToInt32(configuration.GetSection("Port").Value);
+            var ips = Dns.GetHostAddressesAsync(Dns.GetHostName()).Result;
+            config.Defaults.HostNameOrIPAddress = ips.FirstOrDefault()?.ToString();
 
-            await host.StartAsync();
+            var silo = new SiloHostBuilder()
+                 .AddApplicationPartsFromAppDomain()
+                 .AddApplicationPartsFromBasePath()
+                 .UseConfiguration(config)
+                 .ConfigureLogging(configure => configure.SetMinimumLevel(LogLevel.Warning).AddConsole())
+                 .Build();
 
-            Console.WriteLine("Application started. Listening on " + config.Defaults.ProxyGatewayEndpoint);
+            silo.StartAsync().Wait();
 
-            return host;
+            Console.WriteLine("Application started.");
+
+            silo.Stopped.Wait();
         }
     }
 }

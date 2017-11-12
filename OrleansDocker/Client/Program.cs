@@ -1,8 +1,12 @@
 ﻿using Interfaces;
+using Microsoft.Extensions.Configuration;
 using Orleans;
 using Orleans.Runtime;
 using Orleans.Runtime.Configuration;
 using System;
+using System.IO;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Client
@@ -11,59 +15,42 @@ namespace Client
     {
         static void Main(string[] args)
         {
-            try
-            {
-                var client = StartClientWithRetries().Result;
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("Config/appsettings.json", false, true);
+            var configuration = builder.Build();
 
-                DoClientWork(client).Wait();
-            }
-            catch (Exception e)
+            var config = new ClientConfiguration
             {
-                Console.WriteLine(e);
+                DeploymentId = configuration.GetSection("DeploymentId").Value,
+                PropagateActivityId = true
+            };
+
+            var hostEntry = Dns.GetHostEntryAsync(configuration.GetSection("ServiceName").Value).Result;
+            foreach (var item in hostEntry.AddressList)
+            {
+                Console.WriteLine(item);
+            }
+            var ip = hostEntry.AddressList[0];
+            config.Gateways.Add(new IPEndPoint(ip, Convert.ToInt32(configuration.GetSection("ProxyGatewayPort").Value)));
+
+            var client = new ClientBuilder()
+                .AddApplicationPartsFromBasePath()
+                .UseConfiguration(config)
+                .Build();
+
+            client.Connect().Wait();
+
+            var friend = client.GetGrain<IHelloGrain>(0);
+
+            for (int i = 0; i < 10; i++)
+            {
+                var response = friend.SayHello("Good morning, my friend" + i).Result;
+                Console.WriteLine("\n\n{0}\n\n", response);
+                Thread.Sleep(500);
             }
 
             Console.ReadLine();
-        }
-
-        private static async Task<IClusterClient> StartClientWithRetries(int initializeAttemptsBeforeFailing = 5)
-        {
-            int attempt = 0;
-            IClusterClient client;
-            while (true)
-            {
-                try
-                {
-                    var config = ClientConfiguration.LoadFromFile("Config/ClientConfiguration.xml");
-
-                    client = new ClientBuilder()
-                        .UseConfiguration(config)
-                        .AddApplicationPartsFromReferences(typeof(IHelloGrain).Assembly)
-                        .Build();
-
-                    await client.Connect();
-                    Console.WriteLine("Client successfully connect to silo host");
-                    break;
-                }
-                catch (SiloUnavailableException)
-                {
-                    attempt++;
-                    Console.WriteLine($"Attempt {attempt} of {initializeAttemptsBeforeFailing} failed to initialize the Orleans client.");
-                    if (attempt > initializeAttemptsBeforeFailing)
-                    {
-                        throw;
-                    }
-                    await Task.Delay(TimeSpan.FromSeconds(4));
-                }
-            }
-
-            return client;
-        }
-
-        private static async Task DoClientWork(IClusterClient client)
-        {
-            var friend = client.GetGrain<IHelloGrain>(0);
-            var response = await friend.SayHello("Good morning, my friend!");
-            Console.WriteLine("\n\n{0}\n\n", response);
         }
     }
 }

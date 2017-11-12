@@ -2,13 +2,6 @@ version: '3'
 
 services:
   app:
-    image: hub.mingdao.com/beck/orleansservice:0.0.8
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 1
-        delay: 5s
+    image: hub.mingdao.com/beck/orleans/silo-test:0.0.1
     volumes:
-      - /usr/local/beck/docker/beck-orleansservice/config:/app/Config
-    ports:
-      - "40000:40000"
+      - /usr/local/beck/docker/orleans/test/siloservice/config:/app/Config

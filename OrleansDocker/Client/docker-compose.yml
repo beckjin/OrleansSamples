@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  app:
+    image: hub.mingdao.com/beck/orleans/client-test:0.0.1
+    volumes:
+      - /usr/local/beck/docker/orleans/test/clientservice/config:/app/Config
