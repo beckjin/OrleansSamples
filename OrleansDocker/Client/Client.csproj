@@ -8,19 +8,14 @@
    <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Orleans.Core" Version="$(OrleansPackageVersion)" />
-	<PackageReference Include="Microsoft.Orleans.OrleansSqlUtils" Version="$(OrleansPackageVersion)" />
+	<PackageReference Include="Microsoft.Orleans.Client" Version="$(OrleansPackageVersion)" />
+	<PackageReference Include="Microsoft.Orleans.OrleansCodeGenerator.Build" Version="$(OrleansPackageVersion)" />
+	<PackageReference Include="Microsoft.Orleans.Clustering.AdoNet" Version="$(OrleansPackageVersion)" />
 	<PackageReference Include="System.Data.SqlClient" Version="4.4.0" />
   </ItemGroup>
 
    <ItemGroup>
      <ProjectReference Include="..\Interfaces\Interfaces.csproj" />
-   </ItemGroup>
-
-   <ItemGroup>
-     <None Update="Config\ClientConfiguration.xml">
-       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-     </None>
    </ItemGroup>
   
 </Project>

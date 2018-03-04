@@ -1,6 +1,7 @@
 ﻿using Interfaces;
 using Microsoft.Extensions.Configuration;
 using Orleans;
+using Orleans.Hosting;
 using Orleans.Runtime;
 using Orleans.Runtime.Configuration;
 using System;
@@ -20,24 +21,15 @@ namespace Client
             .AddJsonFile("Config/appsettings.json", false, true);
             var configuration = builder.Build();
 
-            var config = new ClientConfiguration
-            {
-                DeploymentId = configuration.GetSection("DeploymentId").Value,
-                PropagateActivityId = true
-            };
-
-            var hostEntry = Dns.GetHostEntryAsync(configuration.GetSection("ServiceName").Value).Result;
-            foreach (var item in hostEntry.AddressList)
-            {
-                Console.WriteLine(item);
-            }
-            var ip = hostEntry.AddressList[0];
-            config.Gateways.Add(new IPEndPoint(ip, Convert.ToInt32(configuration.GetSection("ProxyGatewayPort").Value)));
-
             var client = new ClientBuilder()
-                .AddApplicationPartsFromBasePath()
-                .UseConfiguration(config)
-                .Build();
+               .ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(IHelloGrain).Assembly))
+               .ConfigureCluster(options =>  options.ClusterId = configuration.GetSection("ClusterId").Value)
+               .UseAdoNetClustering(options =>
+               {
+                   options.AdoInvariant = "System.Data.SqlClient";
+                   options.ConnectionString = configuration.GetSection("ConnectionString").Value;
+               })
+               .Build();
 
             client.Connect().Wait();
 
@@ -46,7 +38,7 @@ namespace Client
             for (int i = 0; i < 10; i++)
             {
                 var response = friend.SayHello("Good morning, my friend" + i).Result;
-                Console.WriteLine("\n\n{0}\n\n", response);
+                Console.WriteLine("\n{0}\n", response);
                 Thread.Sleep(500);
             }
 
