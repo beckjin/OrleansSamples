@@ -25,10 +25,10 @@ namespace Silo
             var configuration = builder.Build();
 
             silo = new SiloHostBuilder()
-                 .Configure(options => options.ClusterId = configuration.GetSection("ClusterId").Value)
+                 .Configure<ClusterOptions>(options => options.ClusterId = configuration.GetSection("ClusterId").Value)
                  .UseAdoNetClustering(options =>
                  {
-                     options.AdoInvariant = "System.Data.SqlClient";
+                     options.Invariant = "System.Data.SqlClient";
                      options.ConnectionString = configuration.GetSection("ConnectionString").Value;
 
                  })

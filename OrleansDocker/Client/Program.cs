@@ -1,12 +1,10 @@
 ﻿using Interfaces;
 using Microsoft.Extensions.Configuration;
 using Orleans;
+using Orleans.Configuration;
 using Orleans.Hosting;
-using Orleans.Runtime;
-using Orleans.Runtime.Configuration;
 using System;
 using System.IO;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,15 +21,15 @@ namespace Client
 
             var client = new ClientBuilder()
                .ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(IHelloGrain).Assembly))
-               .ConfigureCluster(options =>  options.ClusterId = configuration.GetSection("ClusterId").Value)
+               .Configure<ClusterOptions>(options =>  options.ClusterId = configuration.GetSection("ClusterId").Value)
                .UseAdoNetClustering(options =>
                {
-                   options.AdoInvariant = "System.Data.SqlClient";
+                   options.Invariant = "System.Data.SqlClient";
                    options.ConnectionString = configuration.GetSection("ConnectionString").Value;
                })
                .Build();
 
-            client.Connect().Wait();
+            StartClientWithRetries(client).Wait();
 
             var friend = client.GetGrain<IHelloGrain>(0);
 
@@ -43,6 +41,23 @@ namespace Client
             }
 
             Console.ReadLine();
+        }
+
+        private static async Task StartClientWithRetries(IClusterClient client)
+        {
+            for (var i = 0; i < 5; i++)
+            {
+                try
+                {
+                    await client.Connect();
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                await Task.Delay(TimeSpan.FromSeconds(5));
+            }
         }
     }
 }
