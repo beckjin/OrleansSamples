@@ -13,11 +13,9 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.1" />
-	<PackageReference Include="Microsoft.Orleans.Core.Legacy" Version="$(OrleansPackageVersion)" />
-	<PackageReference Include="Microsoft.Orleans.OrleansCodeGenerator.Build" Version="$(OrleansPackageVersion)" />
-    <PackageReference Include="Microsoft.Orleans.Runtime.Legacy" Version="$(OrleansPackageVersion)" />
-	<PackageReference Include="Microsoft.Orleans.Clustering.AdoNet" Version="$(OrleansPackageVersion)" />
-    <PackageReference Include="Microsoft.Orleans.Server" Version="$(OrleansPackageVersion)" />
+	<PackageReference Include="Microsoft.Orleans.OrleansCodeGenerator.Build" Version="2.0.0" />
+	<PackageReference Include="Microsoft.Orleans.Clustering.AdoNet" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Orleans.Server" Version="2.0.0" />
 	<PackageReference Include="System.Data.SqlClient" Version="4.4.3" />
   </ItemGroup>
 
@@ -31,7 +29,5 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
   
 </Project>

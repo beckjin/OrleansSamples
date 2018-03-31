@@ -7,7 +7,7 @@ namespace Grains
     {
         Task<string> IHelloGrain.SayHello(string greeting)
         {
-            return Task.FromResult($"You said: '{greeting}', I say: Hello!");
+            return Task.FromResult($"You said: '{greeting}', I say: Hello");
         }
     }
 }
