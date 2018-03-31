@@ -43,13 +43,22 @@ namespace Silo
 
             Task.Run(StartSilo);
 
-            AssemblyLoadContext.Default.Unloading += context =>
+            Console.CancelKeyPress += (sender, e) =>
             {
                 Task.Run(StopSilo);
-                siloStopped.WaitOne();
+            };
+
+            AppDomain.CurrentDomain.ProcessExit += (s, e) =>
+            {
+                Task.Run(StopSilo);
             };
 
             siloStopped.WaitOne();
+        }
+
+        private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private static async Task StartSilo()
@@ -60,8 +69,11 @@ namespace Silo
 
         private static async Task StopSilo()
         {
-            await silo.StopAsync();
-            Console.WriteLine("Silo stopped");
+            if (silo != null)
+            {
+                await silo.StopAsync();
+                Console.WriteLine("Silo stopped");
+            }
             siloStopped.Set();
         }
     }
