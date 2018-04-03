@@ -6,6 +6,13 @@ services:
     volumes:
       - /usr/local/beck/docker/orleans/test/client:/app/Config
   silo:
-    image: hub.mingdao.com/beck/orleans/silo-test:0.0.9
+    image: hub.mingdao.com/beck/orleans/silo-test:0.0.21
     volumes:
       - /usr/local/beck/docker/orleans/test/silo:/app/Config
+    deploy:
+      replicas: 3
+      placement:
+        constraints:
+          - node.labels.node_234 == 1
+
+
