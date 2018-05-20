@@ -66,10 +66,6 @@ namespace Silo
             siloStopped.WaitOne();
         }
 
-        private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         private static async Task StartSilo()
         {
