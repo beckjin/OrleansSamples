@@ -14,6 +14,7 @@ namespace Client
 
         static void Main(string[] args)
         {
+            Console.Title = "Client";
             client = InitialiseClient().Result;
 
             if (client != null)
