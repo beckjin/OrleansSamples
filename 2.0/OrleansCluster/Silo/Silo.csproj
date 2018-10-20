@@ -12,6 +12,7 @@
   
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Orleans.Clustering.AdoNet" Version="2.1.2" />
     <PackageReference Include="Microsoft.Orleans.Persistence.AdoNet" Version="2.1.2" />
     <PackageReference Include="Microsoft.Orleans.Server" Version="2.1.2" />
     <PackageReference Include="MySql.Data" Version="8.0.12" />
