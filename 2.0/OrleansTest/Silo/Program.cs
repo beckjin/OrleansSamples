@@ -14,10 +14,29 @@ namespace Silo
         static void Main(string[] args)
         {
             Console.Title = "Silo";
-            StartSilo().Wait();
+
+            RunMainAsync().Wait();
+
+            Console.ReadKey();
         }
 
-        private static async Task StartSilo()
+        private static async Task RunMainAsync()
+        {
+            try
+            {
+                var host = await InitialiseSilo();
+                Console.WriteLine("Silo started successfully");
+                Console.WriteLine("Press enter to exit...");
+                Console.ReadLine();
+                await host.StopAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        private static async Task<ISiloHost> InitialiseSilo()
         {
             var builder = new SiloHostBuilder()
                 .UseLocalhostClustering()
@@ -32,11 +51,7 @@ namespace Silo
 
             var host = builder.Build();
             await host.StartAsync();
-
-            Console.WriteLine("Silo started successfully");
-            Console.WriteLine("Press enter to exit...");
-            Console.ReadLine();
-            await host.StopAsync();
+            return host;
         }
     }
 }

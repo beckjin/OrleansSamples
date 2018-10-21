@@ -10,16 +10,38 @@ namespace Silo
 {
     class Program
     {
+        private const string ClusterId = "dev";
+        private const string ServiceId = "OrleansSample";
+
         private const string Invariant = "MySql.Data.MySqlClient";
         private const string ConnectionString = "server=localhost;port=3306;database=orleans;user id=root;password=;SslMode=none;";
 
         static void Main(string[] args)
         {
             Console.Title = "Silo";
-            StartSilo().Wait();
+
+            RunMainAsync().Wait();
+
+            Console.ReadKey();
         }
 
-        private static async Task StartSilo()
+        private static async Task RunMainAsync()
+        {
+            try
+            {
+                var host = await InitialiseSilo();
+                Console.WriteLine("Silo started successfully");
+                Console.WriteLine("Press enter to exit...");
+                Console.ReadLine();
+                await host.StopAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        private static async Task<ISiloHost> InitialiseSilo()
         {
             var builder = new SiloHostBuilder()
                 // Grain State
@@ -35,12 +57,12 @@ namespace Silo
                     options.Invariant = Invariant;
                     options.ConnectionString = ConnectionString;
                 })
-                .AddSimpleMessageStreamProvider("SMSProvider")
                 .Configure<ClusterOptions>(options =>
                 {
-                    options.ClusterId = "dev";
-                    options.ServiceId = "OrleansTest";
+                    options.ClusterId = ClusterId;
+                    options.ServiceId = ServiceId;
                 })
+                .AddSimpleMessageStreamProvider("SMSProvider")
                 .ConfigureEndpoints(siloPort: 11111, gatewayPort: 30000)
                 .ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(PublisherGrain).Assembly).WithReferences())
                 .ConfigureLogging(log => log.SetMinimumLevel(LogLevel.Warning).AddConsole());
@@ -48,11 +70,7 @@ namespace Silo
             var host = builder.Build();
             await host.StartAsync();
 
-            Console.WriteLine("Silo started successfully");
-            Console.WriteLine("Press enter to exit...");
-            Console.ReadLine();
-            Console.WriteLine("-------------------------------");
-            await host.StopAsync();
+            return host;
         }
     }
 }

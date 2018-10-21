@@ -16,7 +16,7 @@ namespace Grains
             var streamProvider = GetStreamProvider("SMSProvider");
 
             // 发布对应的stream命名空间，有隐式或显式类型
-            stream = streamProvider.GetStream<string>(streamId, "GrainExplicitStream"); //隐式：GrainImplicitStream
+            stream = streamProvider.GetStream<string>(streamId, "GrainImplicitStream"); //隐式：GrainImplicitStream
             return base.OnActivateAsync();
         }
 

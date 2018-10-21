@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
+using Orleans.Runtime;
 using System;
 using System.Threading.Tasks;
 
@@ -10,76 +11,92 @@ namespace Client
 {
     class Program
     {
-        private static IClusterClient client = null;
+        private const string ClusterId = "dev";
+        private const string ServiceId = "OrleansSample";
+
+        private const string Invariant = "MySql.Data.MySqlClient";
+        private const string ConnectionString = "server=localhost;port=3306;database=orleans;user id=root;password=;SslMode=none;";
+
+        private const int InitializeAttemptsBeforeFailing = 5;
+        private static int attempt = 0;
 
         static void Main(string[] args)
         {
             Console.Title = "Client";
-            client = InitialiseClient().Result;
-            if (client != null)
-            {
-                while (true)
-                {
-                    Console.WriteLine("Press 'exit' to exit...");
-                    var input = Console.ReadLine();
-                    if (input == "exit") break;
 
-                    // 发布消息
-                    var publisherGrain = client.GetGrain<IPublisherGrain>(Guid.Empty);
-                    publisherGrain.PublishMessageAsync(input);
+            RunMainAsync().Wait();
+
+            Console.ReadKey();
+        }
+
+        private static async Task RunMainAsync()
+        {
+            try
+            {
+                using (var client = await InitialiseClient())
+                {
+                    await DoClientWork(client);
+                    Console.WriteLine($"执行结束");
                 }
             }
-            else
+            catch (Exception e)
             {
-                Console.WriteLine("Client init failed.");
+                Console.WriteLine(e);
+                Console.ReadKey();
             }
-
-            Console.ReadLine();
         }
 
         private static async Task<IClusterClient> InitialiseClient()
         {
-            int tryTimes = 10;
-            while (tryTimes > 0)
-            {
-                try
+            var client = new ClientBuilder()
+                .UseAdoNetClustering(options =>
                 {
-                    client = new ClientBuilder()
-                                .UseAdoNetClustering(options =>
-                                {
-                                    options.Invariant = "MySql.Data.MySqlClient";
-                                    options.ConnectionString = "server=localhost;port=3306;database=orleans;user id=root;password=;SslMode=none;";
-                                })
-                                .Configure<ClusterOptions>(options =>
-                                {
-                                    options.ClusterId = "dev";
-                                    options.ServiceId = "OrleansTest";
-                                })
-                                .AddSimpleMessageStreamProvider("SMSProvider")
-                                .ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(IPublisherGrain).Assembly))
-                                .ConfigureLogging(log => log.SetMinimumLevel(LogLevel.Warning).AddConsole())
-                                .Build();
+                    options.Invariant = Invariant;
+                    options.ConnectionString = ConnectionString;
+                })
+                .Configure<ClusterOptions>(options =>
+                {
+                    options.ClusterId = ClusterId;
+                    options.ServiceId = ServiceId;
+                })
+                .AddSimpleMessageStreamProvider("SMSProvider")
+                .ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(IPublisherGrain).Assembly))
+                .ConfigureLogging(log => log.SetMinimumLevel(LogLevel.Warning).AddConsole())
+                .Build();
 
-                    await client.Connect();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                finally
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-
-                    if (client != null && !client.IsInitialized)
-                    {
-                        client.Dispose();
-                        client = null;
-                    }
-                }
-                tryTimes--;
-            }
+            await client.Connect(RetryFilter);
 
             return client;
+        }
+
+        private static async Task<bool> RetryFilter(Exception exception)
+        {
+            if (exception.GetType() != typeof(SiloUnavailableException))
+            {
+                Console.WriteLine($"Cluster client failed to connect to cluster with unexpected error.  Exception: {exception}");
+                return false;
+            }
+            attempt++;
+            Console.WriteLine($"Cluster client attempt {attempt} of {InitializeAttemptsBeforeFailing} failed to connect to cluster.  Exception: {exception}");
+            if (attempt > InitializeAttemptsBeforeFailing)
+            {
+                return false;
+            }
+            await Task.Delay(TimeSpan.FromSeconds(3));
+            return true;
+        }
+
+        private static async Task DoClientWork(IClusterClient client)
+        {
+            while (true)
+            {
+                Console.WriteLine("输入发布内容（\"exit\"退出）:");
+                var input = Console.ReadLine();
+                if (input == "exit") break;
+                // 发布消息
+                var publisherGrain = client.GetGrain<IPublisherGrain>(Guid.Empty);
+                await publisherGrain.PublishMessageAsync(input);
+            }
         }
     }
 }

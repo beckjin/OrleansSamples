@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Configuration;
+using Orleans.Runtime;
 using System;
 using System.Threading.Tasks;
 
@@ -9,68 +10,82 @@ namespace Client
 {
     class Program
     {
-        private static IClusterClient client = null;
+        private const string ClusterId = "dev";
+        private const string ServiceId = "OrleansSample";
+
+        private const int InitializeAttemptsBeforeFailing = 5;
+        private static int attempt = 0;
 
         static void Main(string[] args)
         {
             Console.Title = "Client";
-            client = InitialiseClient().Result;
-            if (client != null)
-            {
-                var joe = client.GetGrain<IPersonGrain>("Joe");
-                joe.SayHelloAsync();
-                joe.SayHelloAsync();
 
-                var sam = client.GetGrain<IPersonGrain>("Sam");
-                sam.SayHelloAsync();
-                sam.SayHelloAsync();
-            }
-            else
-            {
-                Console.WriteLine("Client init failed.");
-            }
+            RunMainAsync().Wait();
 
-            Console.ReadLine();
+            Console.ReadKey();
+        }
+
+        private static async Task RunMainAsync()
+        {
+            try
+            {
+                using (var client = await InitialiseClient())
+                {
+                    Console.WriteLine($"开始执行....");
+                    await DoClientWork(client);
+                    Console.WriteLine($"执行结束");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Console.ReadKey();
+            }
         }
 
         private static async Task<IClusterClient> InitialiseClient()
         {
-            int tryTimes = 10;
-            while (tryTimes > 0)
-            {
-                try
+            var client = new ClientBuilder()
+                .UseLocalhostClustering()
+                .Configure<ClusterOptions>(options =>
                 {
-                    client = new ClientBuilder()
-                                .UseLocalhostClustering()
-                                .Configure<ClusterOptions>(options =>
-                                {
-                                    options.ClusterId = "dev";
-                                    options.ServiceId = "OrleansTest";
-                                })
-                                .ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(IPersonGrain).Assembly))
-                                .ConfigureLogging(log => log.SetMinimumLevel(LogLevel.Warning).AddConsole())
-                                .Build();
+                    options.ClusterId = ClusterId;
+                    options.ServiceId = ServiceId;
+                })
+                .ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(IPersonGrain).Assembly))
+                .ConfigureLogging(log => log.SetMinimumLevel(LogLevel.Warning).AddConsole())
+                .Build();
 
-                    await client.Connect();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                finally
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-
-                    if (client != null && !client.IsInitialized)
-                    {
-                        client.Dispose();
-                        client = null;
-                    }
-                }
-                tryTimes--;
-            }
-
+            await client.Connect(RetryFilter);
             return client;
+        }
+
+        private static async Task<bool> RetryFilter(Exception exception)
+        {
+            if (exception.GetType() != typeof(SiloUnavailableException))
+            {
+                Console.WriteLine($"Cluster client failed to connect to cluster with unexpected error.  Exception: {exception}");
+                return false;
+            }
+            attempt++;
+            Console.WriteLine($"Cluster client attempt {attempt} of {InitializeAttemptsBeforeFailing} failed to connect to cluster.  Exception: {exception}");
+            if (attempt > InitializeAttemptsBeforeFailing)
+            {
+                return false;
+            }
+            await Task.Delay(TimeSpan.FromSeconds(3));
+            return true;
+        }
+
+        private static async Task DoClientWork(IClusterClient client)
+        {
+            var joe = client.GetGrain<IPersonGrain>("Joe");
+            await joe.SayHelloAsync();
+            await joe.SayHelloAsync();
+
+            var sam = client.GetGrain<IPersonGrain>("Sam");
+            await sam.SayHelloAsync();
+            await sam.SayHelloAsync();
         }
     }
 }
