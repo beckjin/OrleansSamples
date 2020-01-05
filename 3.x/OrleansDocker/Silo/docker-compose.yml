@@ -2,8 +2,4 @@ version: '3'
 
 services:
   silo1:
-    image: beckjin/orleans-test:1.0.11
-    ports:
-      - 11111:11111
-      - 30000:30000
-      
+    image: beckjin/orleans-test:1.0.13
