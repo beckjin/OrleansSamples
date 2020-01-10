@@ -1,0 +1,5 @@
+version: '3'
+
+services:
+  client1:
+    image: beckjin/orleans-client:0.0.1

@@ -6,6 +6,7 @@ using Orleans.Hosting;
 using Orleans.Runtime;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Client
@@ -14,6 +15,7 @@ namespace Client
     {
         private const int InitializeAttemptsBeforeFailing = 5;
         private static int attempt = 0;
+        private static readonly ManualResetEvent manualResetEvent = new ManualResetEvent(false);
 
         static async Task Main(string[] args)
         {
@@ -40,7 +42,7 @@ namespace Client
                 Console.WriteLine("Client init failed.");
             }
 
-            Console.ReadKey();
+            manualResetEvent.WaitOne();
         }
 
         private static async Task<IClusterClient> InitialiseClient(IConfigurationRoot configuration)
