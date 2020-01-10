@@ -2,4 +2,8 @@ version: '3'
 
 services:
   silo1:
-    image: beckjin/orleans-test:1.0.13
+    image: beckjin/orleans-server:0.0.1
+  silo2:
+    image: beckjin/orleans-server:0.0.1
+  silo3:
+    image: beckjin/orleans-server:0.0.1

@@ -61,7 +61,6 @@ namespace Silo
             siloStopped.WaitOne();
         }
 
-
         private static async Task StartSilo()
         {
             await silo.StartAsync();
